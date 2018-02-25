@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "hackillinois-196207",
+  "private_key_id": "994baa8bd9bb3ed0cc9408dc06deb22aca27c4f2",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC8w8H3lN8Gplsl\n4iaogqB90glHr2n4yRgS2Q3ZuJn1KXg/jk9ZOIFCqUXK9AGBnGNp3FNWtkPVaWMX\nkLNYRHmgn/JniOyto2ijCYpPs+kjD0DCXDQfu6QXMxDr6q4CTclpkFxk1Fb73M/d\nqXK4fAiPzUyw8j7WaK52eV+V/SZFLTyCls2nsq6Jvj7Lei/QDdxhq8nsHvPZ4oDQ\njzvKE/NYo3mV7Rgq42AaMj5iv5MzM6SuD5c4Tqy2Fv9DSzJaT7w+0jY/ioOU3Kif\nFraBzPGxbbVNxQnCMJqfxxjfS89fhA4ySE6g/h9Gmt4nBPtp6CAr7iw5xZXz15a9\nJyBY9a4zAgMBAAECggEAB1HsoIheztpZyDspKJ4BUY15AF5dVM8MHV7/I1xHQvyS\ns8H14A3cCfBPFEUoX4KedOAvQN8BILJdPjmOkbzYVORDi5+4i5s9xPcPvuASUqu6\nwJfkd9n88ig5FcPTJn+4lThBWGjHA1J76/PChbIVEcVgC7ACVhfpsupylZ61gqUr\n9P2rmAKHbUz3Lpsj5DoWxsVqWedrDI7ksuoLwgIS+P+/iUkb+/SLR8UjfgoAYLJQ\nqSdeiFn8rTarnXjSrZjZE8sgEMMYkIZm5Pqazv7TkR1TLFiC2mKC67j5nm0VZvnx\nMK6VI3MdlCZJWUdxR3t8AyveoNCDud5wvqw8DT610QKBgQDfHe65kDxf1VSvYOn1\nGYL4fMkefLVExj8bN7ugi4N4ElR7Eg29W3SUyjKhLhh4KLopTFT6gZqD/XljixmW\ns3I4y7Eqa2MX5ErDU9uWspqPlNPl/1V26D1aEI3LgH/j+EWxtInEUoxcuOcP7xWe\nqTmOWaGogrkPF4PGpNKLZ98+7QKBgQDYlbxPRGeK2ACxrdkM/MwIrMYBs1QeK7RO\n4UcXXjX0j72ZpsaBLqRfpJHzDbTgzkhrO2QD6zucPTbdpADlkxy7tT7gcIPYHTuk\nbZZhAg82+eNt6yWpENcs0krPM1qhDtbZ0t7KzLTUU89mE/AGjJIDUngUREYBBdcp\nWHC+AYfdnwKBgQDOb2Z6wK5ryPlyz0uIoJMikGqRT7d0K60l5LowQAVjKiqKOFkI\nE79ZD4Aqy3iObLhaD6ssoI+zgeo3pPMHEX8kd6qzYeqsp2hZM5Sf6R7CrGQmkMml\nnBlv5JMdcAZkikkJs84oHGyMOfRoNMEfLNn5EItXW6QYB5zARa4cl/3hvQKBgQDR\nMuBvGD2DCNyywp8yQkO55VhkcBjCA6jnwAVw9tja3rReY469XJX8o/Mtd4HM2rNs\nkDMs7dvoL+B8+Vq8ZPqN/KU9GLDg4GupiQiFrv2PNpOMqmL4CIIukvkbZhkWFEVG\npL352PyZUlKz4HIpgUHP36qIuOF9P2zyTLCpdsULNQKBgB6nfv7ChzzzqafBZfW7\nEhF+y9OW41sBY4kHDdc2ImSq20VtIE+UtpoeIMyp35zx73a5JYNKGbX6PF9zvduy\nUnI24ITLVL1xqRzOBNZCa0oobdz5As9PVMk+Ql1a4gEL+74P1hA75/oUyMfEEJup\n2ImKQ1Jv0WXqtWrWikVXI+3I\n-----END PRIVATE KEY-----\n",
+  "client_email": "starting-account-fv9tg76vcf9p@hackillinois-196207.iam.gserviceaccount.com",
+  "client_id": "108924445441826512003",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/starting-account-fv9tg76vcf9p%40hackillinois-196207.iam.gserviceaccount.com"
+}
