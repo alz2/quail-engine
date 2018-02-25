@@ -1,5 +1,7 @@
-var request = require('request');
+var req= require('request');
 const jsdom = require("jsdom");
+let async = require('async');
+
 const { JSDOM } = jsdom;
 var translate = require('@google-cloud/translate');
 var translateClient = translate({
@@ -30,10 +32,22 @@ module.exports = function(app) {
             if (!err){
                 search_engine(query, "google", res_lang, (results) => {
                     console.log("finished google");
-                    all_results.push(results);
+                    all_results.push({
+                        engine: "google",
+                        results: results
+                    });
                     search_engine(query, "baidu", res_lang, (results) => {
-                        all_results.push(results);
-                        res.send(all_results);
+                        all_results.push({
+                            engine: "baidu",
+                            results: results
+                        });
+                        search_engine(query, "yahoo", res_lang, (results) => {
+                            all_results.push({
+                                engine: "yahoo",
+                                results: results
+                            });
+                            res.send(all_results);
+                        })
                     });
                 });
             }
@@ -47,7 +61,7 @@ function search_engine(query, engine, res_lang, cb){
     let lang = res_lang.language;
     let conf = res_lang.confidence;
 
-    console.log("search " + engine + "with language " + lang);
+    console.log("search " + engine + " with language " + lang);
     // confident that not primary language
     if (conf > .50 && lang != primary_engine_langs[engine]){
         console.log("translating to " + primary_engine_langs[engine]);
@@ -66,6 +80,8 @@ function query_engine(query, engine, cb){
         google_query(query, cb);
     } else if (engine == "baidu"){
         baidu_query(query, cb);
+    } else if (engine == "yahoo") {
+        yahoo_query(query, cb);
     }
 }
 
@@ -92,10 +108,36 @@ function baidu_query(query, cb){
     JSDOM.fromURL(req_url).then( dom => {
         elements = Array.from( dom.window.document.querySelectorAll('h3') );
         results = []
+        before_urls = [] 
+        titles = []
         elements.forEach((item) => {
             let html_str = item.innerHTML;
-            //console.log(html_str.trim());
             let href = html_str.substring(html_str.indexOf('href=') + 6, html_str.indexOf('" target='));
+            titles.push(item.textContent.trim()); 
+            before_urls.push(href);
+        });
+        redirects(before_urls, (err, urls) => {
+            for (let i = 0; i < urls.length; i++) {
+                console.log(urls[i]);
+                results.push({
+                    title: titles[i],
+                    url: urls[i]
+                });
+            }
+            cb(results);
+        });
+    });
+}
+
+function yahoo_query(query, cb) {
+    let req_url = 'https://search.yahoo.co.jp/search;?p='+query;
+    JSDOM.fromURL(req_url).then( dom => {
+        elements = Array.from( dom.window.document.querySelectorAll('h3') );
+        results = []
+        elements.forEach((item) => {
+            let html_str = item.innerHTML;
+            console.log(html_str.trim());
+            let href = html_str.substring(html_str.indexOf('href=') + 6, html_str.indexOf('"onmousedown'));
             results.push({
                 title: item.textContent.trim(), 
                 url: href
@@ -115,3 +157,23 @@ function translate_to_primary(query, engine, cb){
     }); 
 }
 
+
+function getRedirect(url, cb) {
+    req({
+        url: url,
+        followRedirect: false,
+        method: 'HEAD',
+        headers: {
+            'User-Agent':  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Safari/604.1.38'
+        }
+    }, (err, res, body) => {
+        if(err)
+            return cb(err);
+
+        cb(null, res.headers.location);
+    });
+}
+
+function redirects(urls, cb) {
+    async.map(urls, getRedirect, cb);
+}
