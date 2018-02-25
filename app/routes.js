@@ -196,10 +196,12 @@ function google_query(query, cb){
         elements.forEach((item) => {
             let html_str = item.innerHTML;
             let href = html_str.substring(html_str.indexOf('q=') + 2, html_str.indexOf('&'));
-            results.push({
-                title: item.textContent, 
-                url: href
-            });
+            if (item.textContent && href && item.textContent.length && href.length){
+                results.push({
+                    title: item.textContent, 
+                    url: href
+                });
+            }
         });
         translate_to_query_lang(results, (res) => {
             return cb(res);
@@ -224,10 +226,12 @@ function baidu_query(query, cb){
         redirects(before_urls, (err, urls) => {
             for (let i = 0; i < urls.length; i++) {
                 console.log(urls[i]);
-                results.push({
-                    title: titles[i],
-                    url: urls[i]
-                });
+                if (titles[i] && urls[i] && titles[i].length && urls[i].length) {
+                    results.push({
+                        title: titles[i],
+                        url: urls[i]
+                    });
+                }
             }
             translate_to_query_lang(results, (res) => {
                 return cb(res);
@@ -255,10 +259,12 @@ function yahoo_query(query, cb) {
     yahooJp.fetchAll({ p: query }, {}).then(function(items){
         var results = [];
         for (let i = 0; i < items.length; i++) {
-            results.push({
-                title: items[i]["title"],
-                url: items[i]["url"]
-            });
+            if (items[i]["title"] && items[i]["url"] && items[i]["title"].length && items[i]["url"].length) {
+                results.push({
+                    title: items[i]["title"],
+                    url: items[i]["url"]
+                });
+            }
         }
         translate_to_query_lang(results, (res) => {
             return cb(res);
