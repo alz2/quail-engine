@@ -40,9 +40,11 @@ module.exports = function(app) {
         res.render('index.ejs'); // load the index.ejs file
     });
 
-    app.post('/query', (req, res) => {
+
+    app.get('/query/:query', (req, res) => {
         var all_results = [];
-        let query = req.body.query;
+        let query = req.params.query;
+		console.log(query);
         let lang = translateClient.detect(query, (err, res_lang) => {
             if (!err){
                 query_lang = res_lang.language;

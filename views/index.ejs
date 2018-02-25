@@ -1,26 +1,148 @@
 <!doctype html>
-<html>
-    <head>
-        <title>Quail Engine</title>
-        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
-        <link rel="stylesheet" href="//netdnabootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
-        <style>
-body        { padding-top:80px; }
-        </style>
-    </head>
-    <body>
-        <div class="container">
+<html lang="en">
+  <head>
+  	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-            <div class="jumbotron text-center">
-                <h1>Quail Engine</h1>
-                <form action="/query" method="post">
-                    <div class="form-group">
-                        <input type="text" class="form-control" name="query">
-                    </div>
-                    <button type="submit" class="btn btn-warning btn-lg">Search</button>
-                </form>
-            </div>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-        </div>
-    </body>
+    <title>Quail Engine</title>
+	<style>
+		.result {
+			width: 100%;
+			margin-top: 15px;
+			margin-bottom: 5px;
+			overflow: hidden;
+			height: 70px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			position: relative;
+		}
+		.result > h5 {
+			margin-top: 5px;
+		}
+		.result > a {
+			margin-top: 5px;
+		}
+		.images {
+			margin-top: 13px;
+			width: 100%;
+			border: 1px solid #ccc;
+			min-height: 200px;
+			border-radius: 5px;
+			overflow: hidden;
+		}
+		.engine {
+			float: left;
+			height: 70px;
+			width: 90px;
+			line-height: 70px;
+			text-align: center;
+			color: white;
+			margin-right: 10px;
+		}
+		.Google {
+			background: #007bff;
+		}
+		.Yahoo {
+			background: #1e7e34;
+		}
+		.Baidu {
+			background: #e0a800;
+		}
+	</style>
+  </head>
+  <body ng-app="quail" ng-controller="bird-ctrl">
+
+	<div class="container-fluid">
+
+		<form ng-submit="submit()">
+		<div class="row">
+			<div class="col-md-12" style="text-align: center;">
+				<img src="quail.png" style="height: 100px; margin: 30px;" />
+				<div class="input-group mb-3" style="max-width: 500px; margin: 0 auto;">
+					<input type="text" class="form-control" ng-model="query" placeholder="Search terms" aria-label="Search terms" aria-describedby="basic-addon2">
+					<div class="input-group-append">
+						<button class="btn btn-outline-secondary" type="button">Search</button>
+					</div>
+				</div>		
+			</div>
+		</div>
+		</form>
+
+		<div class="row" style="margin-top: 30px;">
+
+			<div class="col-md-8">
+				<div ng-repeat="x in google" class="result">
+					<div class="engine {{x.type}}">
+						{{ x.type }}
+					</div>
+					<h5>{{ x.title }}</h5>
+					<a ng-href="{{ x.url }}">{{ x.url }}</a>
+				</div>
+			</div>
+
+			<div class="col-md-4">
+				<div class="images">
+					<div style="width: 100%; background: #eee; height: 30px; line-height: 30px; box-sizing: border-box; padding-left: 10px;">
+						Image results
+					</div>
+
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+
+	<script>
+		var app = angular.module('quail', []);
+		app.controller('bird-ctrl', ($scope, $http) => {
+			$scope.submit = function() {
+				$scope.spinner = false
+				$http.get('query/' + $scope.query)
+				.then(res => {
+					window.json = res.data;
+					let json = res.data;
+
+					let results = [];
+
+					console.log('a');
+					for(let i = 0;;i++) {
+						let a = json[0].google[i];
+						if(a)
+						a.type = "Google";
+						let b = json[2].yahoo[i];
+						if(b)
+						b.type = "Yahoo";
+						let c = json[1].baidu[i];
+						if(c)
+						c.type = "Baidu";
+						let d = [a, b, c];
+
+						if(!a && !b && !c)
+							break;
+
+						d.forEach(x => {
+							if(x)
+								results.push(x);
+						});
+					}
+
+					$scope.google = results;
+				});
+			}
+		});
+
+	</script>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
 </html>
