@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Quail Engine</title>
+	<style>
+		.result {
+			width: 100%;
+			margin-top: 15px;
+			margin-bottom: 5px;
+			overflow: hidden;
+			height: 70px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			position: relative;
+		}
+		.result > h5 {
+			margin-top: 5px;
+		}
+		.result > a {
+			margin-top: 5px;
+		}
+		.images {
+			margin-top: 13px;
+			width: 100%;
+			border: 1px solid #ccc;
+			min-height: 200px;
+			border-radius: 5px;
+			overflow: hidden;
+		}
+		.engine {
+			float: left;
+			height: 70px;
+			width: 90px;
+			line-height: 70px;
+			text-align: center;
+			color: white;
+			margin-right: 10px;
+		}
+		.bg-1 {
+			background: #007bff;
+		}
+		.bg-2 {
+			background: #1e7e34;
+		}
+		.bg-3 {
+			background: #e0a800;
+		}
+	</style>
+  </head>
+  <body>
+
+	<div class="container-fluid">
+
+		<div class="row">
+			<div class="col-md-12" style="text-align: center;">
+				<img src="quail.png" style="height: 100px; margin: 30px;" />
+				<div class="input-group mb-3" style="max-width: 500px; margin: 0 auto;">
+					<input type="text" class="form-control" placeholder="Search terms" aria-label="Search terms" aria-describedby="basic-addon2">
+					<div class="input-group-append">
+						<button class="btn btn-outline-secondary" type="button">Search</button>
+					</div>
+				</div>		
+			</div>
+		</div>
+
+		<div class="row" style="margin-top: 30px;">
+
+			<div class="col-md-8">
+				<div class="result">
+					<div class="engine bg-1">
+						Google
+					</div>
+				</div>
+
+				<div class="result">
+					<div class="engine bg-2">
+						Baidu
+					</div>
+					<h5>How many maths can you into the arcsin of a singular matrix</h5>
+					<a href="https://baidu.com/search?q=this+is+linalg+np">https://baidu.com/search?q=this+is+linalg+np</a>
+				</div>
+
+				<div class="result">
+					<div class="engine bg-3">
+						Yahoo
+					</div>
+				</div>
+			</div>
+
+			<div class="col-md-4">
+				<div class="images">
+					<div style="width: 100%; background: #eee; height: 30px; line-height: 30px; box-sizing: border-box; padding-left: 10px;">
+						Image results
+					</div>
+
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+</html>
