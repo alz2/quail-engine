@@ -15,3 +15,18 @@ We hope that quail, or at least the idea of quail, helps make information more r
 QUERY(Language q) --|--- QUERY(CHINESE) --- BAIDU ------ RESULTS(CHINESE) ----|----- RESULTS(LANGUAGE q)
                     |                                                         |
                     |--- QUERY(ENGLISH) --- GOOGLE ----- RESULTS(ENGLISH) ----|
+                    
+```
+
+
+### Usage ###
+
+We currently aren't hosting this website anywhere, but if you want to run it locally, you can use Node.
+
+```Node
+npm install
+```
+
+```Node
+node server
+```
