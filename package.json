@@ -10,7 +10,9 @@
     "body-parser": "~1.0.0",
     "request": "*",
     "jsdom": "*",
-    "@google-cloud/translate": "*"
+    "@google-cloud/translate": "*",
+    "yahoo-jp": "*",
+    "images-scraper": "*"
   },
   "engines": {
       "node": "6.9.1"
