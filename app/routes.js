@@ -1,6 +1,7 @@
 var req= require('request');
 const jsdom = require("jsdom");
 let async = require('async');
+var yahooJp= require('yahoo-jp');
 
 const { JSDOM } = jsdom;
 var translate = require('@google-cloud/translate');
@@ -8,12 +9,16 @@ var translateClient = translate({
     projectId: 'hackillinois-196207',
     keyFilename: 'keyfile.json'
 });
+var Scraper = require ('images-scraper')
+    , google = new Scraper.Google()
+    , yahoo = new Scraper.Yahoo();
 
 const primary_engine_langs = {
     google: "en",
     baidu: "zh-CN",
     yahoo: "ja",
-    naver: "ko"
+    naver: "ko",
+    yandax: "ru"
 };
 
 var query_lang; 
@@ -45,8 +50,44 @@ module.exports = function(app) {
                             all_results.push({
                                 "yahoo": results
                             });
-                            translate_to_query_lang(all_results, (results) => {
-                                res.send(results);
+                            search_engine(query, "yandax", res_lang, (results) => {
+                                all_results.push({
+                                    "yandax": results
+                                });
+                                translate_to_query_lang(all_results, (results) => {
+                                    google.list({
+                                        keyword: query,
+                                        num: 5,
+                                    }).then(function (images_g) {
+                                        // push google images
+                                        google_images = [];
+                                        for (var i = 0; i < images_g.length; i++) {
+                                            google_images.push(images_g[i]["url"]);
+                                        }
+                                        results.push({
+                                            "google_images": google_images
+                                        });
+
+                                        yahoo.list({
+                                            keyword: query,
+                                            num: 5,
+                                        }).then(function (images_y) {
+                                            yahoo_images = [];
+                                            for (var i = 0; i < images_y.length; i++) {
+                                                yahoo_images.push(images_y[i]["url"]);
+                                            }
+                                            results.push({
+                                                "yahoo_images": yahoo_images
+                                            });
+                                            // DONE
+                                            res.send(results);
+                                        }).catch(function (err) {
+                                            console.log('err',err);
+                                        });
+                                    }).catch(function(err) {
+                                        console.log('err', err);
+                                    });
+                                });
                             });
                         })
                     });
@@ -54,7 +95,10 @@ module.exports = function(app) {
             }
         });
     });
-    //res.send(results);
+
+    app.get('/query', (req, res) => {
+        res.redirect('/');
+    });
 }
 
 
@@ -83,6 +127,8 @@ function query_engine(query, engine, cb){
         baidu_query(query, cb);
     } else if (engine == "yahoo") {
         yahoo_query(query, cb);
+    } else if (engine == "yandax") {
+        yandax_query(query, cb);
     }
 }
 
@@ -137,13 +183,48 @@ function baidu_query(query, cb){
 
 function yahoo_query(query, cb) {
     let req_url = 'https://search.yahoo.co.jp/search;?p='+query;
-    JSDOM.fromURL(req_url).then( dom => {
-        elements = Array.from( dom.window.document.querySelectorAll('h3') );
-        results = []
+    //JSDOM.fromURL(req_url).then( dom => {
+    //    elements = Array.from( dom.window.document.querySelectorAll('h3') );
+    //    results = []
+    //    elements.forEach((item) => {
+    //        let html_str = item.innerHTML;
+    //        console.log(html_str.trim());
+    //        let href = html_str.substring(html_str.indexOf('href=') + 6, html_str.indexOf('"onmousedown'));
+    //        results.push({
+    //            title: item.textContent.trim(), 
+    //            url: href
+    //        });
+    //    });
+    //    return cb(results);
+    //});
+    yahooJp.fetchAll({ p: query }, {}).then(function(items){
+        var results = [];
+        for (let i = 0; i < items.length; i++) {
+            results.push({
+                title: items[i]["title"],
+                url: items[i]["url"]
+            });
+        }
+        translate_to_query_lang(results, (res) => {
+            return cb(res);
+        });
+    });
+}
+
+function yandax_query(query, cb) {
+    let req_url = 'https://www.yandex.com/search/?text='+query;
+    //const dom = new JSDOM(``, {
+    //    url: req_url,
+    //    contentType: "text/html",
+    //    userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.167 Safari/537.36",
+    //});
+
+    JSDOM.fromURL(req_url, { userAgent:"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.167 Safari/537.36" }).then( dom => {
+        elements = Array.from( dom.window.document.querySelectorAll('h2') );
+        var results = [];
         elements.forEach((item) => {
             let html_str = item.innerHTML;
-            console.log(html_str.trim());
-            let href = html_str.substring(html_str.indexOf('href=') + 6, html_str.indexOf('"onmousedown'));
+            let href = html_str.substring(html_str.indexOf('href=') + 6, html_str.indexOf('" data-'));
             results.push({
                 title: item.textContent.trim(), 
                 url: href
