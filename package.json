@@ -1,0 +1,15 @@
+{
+  "name": "quail-engine",
+  "main": "server.js",
+  "dependencies": {
+    "ejs": "~0.8.5",
+    "express": "~4.0.0",
+    "nodemon": "^1.14.10",
+    "express-helpers": "*",
+    "morgan": "~1.0.0",
+    "body-parser": "~1.0.0",
+    "request": "*",
+    "jsdom": "*",
+    "@google-cloud/translate": "*"
+  }
+}
