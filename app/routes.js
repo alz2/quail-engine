@@ -21,6 +21,14 @@ const primary_engine_langs = {
     yandax: "ru"
 };
 
+const quail_engines = ["google", "baidu", "yahoo"];
+
+function push_results(acculm, engine, results){
+    acculm.push({
+        engine: results
+    })
+}
+
 var query_lang; 
 
 module.exports = function(app) {
@@ -38,60 +46,105 @@ module.exports = function(app) {
         let lang = translateClient.detect(query, (err, res_lang) => {
             if (!err){
                 query_lang = res_lang.language;
-                search_engine(query, "google", res_lang, (results) => {
-                    all_results.push({
-                        "google": results
-                    });
-                    search_engine(query, "baidu", res_lang, (results) => {
-                        all_results.push({
-                            "baidu": results
-                        });
-                        search_engine(query, "yahoo", res_lang, (results) => {
-                            all_results.push({
-                                "yahoo": results
-                            });
-                            search_engine(query, "yandax", res_lang, (results) => {
-                                all_results.push({
-                                    "yandax": results
-                                });
-                                translate_to_query_lang(all_results, (results) => {
-                                    google.list({
-                                        keyword: query,
-                                        num: 5,
-                                    }).then(function (images_g) {
-                                        // push google images
-                                        google_images = [];
-                                        for (var i = 0; i < images_g.length; i++) {
-                                            google_images.push(images_g[i]["url"]);
-                                        }
-                                        results.push({
-                                            "google_images": google_images
-                                        });
+                //search_engine(query, "google", res_lang, (results) => {
+                //    all_results.push({
+                //        "google": results
+                //    });
+                //    search_engine(query, "baidu", res_lang, (results) => {
+                //        all_results.push({
+                //            "baidu": results
+                //        });
+                //        search_engine(query, "yahoo", res_lang, (results) => {
+                //            all_results.push({
+                //                "yahoo": results
+                //            });
+                //            search_engine(query, "yandax", res_lang, (results) => {
+                //                all_results.push({
+                //                    "yandax": results
+                //                });
+                //                translate_to_query_lang(all_results, (results) => {
+                //                    google.list({
+                //                        keyword: query,
+                //                        num: 5,
+                //                    }).then(function (images_g) {
+                //                        // push google images
+                //                        google_images = [];
+                //                        for (var i = 0; i < images_g.length; i++) {
+                //                            google_images.push(images_g[i]["url"]);
+                //                        }
+                //                        results.push({
+                //                            "google_images": google_images
+                //                        });
 
-                                        yahoo.list({
-                                            keyword: query,
-                                            num: 5,
-                                        }).then(function (images_y) {
-                                            yahoo_images = [];
-                                            for (var i = 0; i < images_y.length; i++) {
-                                                yahoo_images.push(images_y[i]["url"]);
-                                            }
-                                            results.push({
-                                                "yahoo_images": yahoo_images
-                                            });
-                                            // DONE
-                                            res.send(results);
-                                        }).catch(function (err) {
-                                            console.log('err',err);
-                                        });
-                                    }).catch(function(err) {
-                                        console.log('err', err);
-                                    });
-                                });
+                //                        yahoo.list({
+                //                            keyword: query,
+                //                            num: 5,
+                //                        }).then(function (images_y) {
+                //                            yahoo_images = [];
+                //                            for (var i = 0; i < images_y.length; i++) {
+                //                                yahoo_images.push(images_y[i]["url"]);
+                //                            }
+                //                            results.push({
+                //                                "yahoo_images": yahoo_images
+                //                            });
+                //                            // DONE
+                //                            res.send(results);
+                //                        }).catch(function (err) {
+                //                            console.log('err',err);
+                //                        });
+                //                    }).catch(function(err) {
+                //                        console.log('err', err);
+                //                    });
+                //                });
+                //            });
+                //        })
+                //    });
+                //});
+                async.map(quail_engines, function(engine, cb) {
+                    search_engine(query, engine, res_lang, (results) => {
+                        all_results.push({
+                            [engine]: results
+                        });
+                        cb();
+                    });
+                }, function(err, results) {
+                    // get immages
+                    translate_to_query_lang(all_results, (results) => {
+                        google.list({
+                            keyword: query,
+                            num: 5,
+                        }).then(function (images_g) {
+                            // push google images
+                            google_images = [];
+                            for (var i = 0; i < images_g.length; i++) {
+                                google_images.push(images_g[i]["url"]);
+                            }
+                            results.push({
+                                "google_images": google_images
                             });
-                        })
+
+                            yahoo.list({
+                                keyword: query,
+                                num: 5,
+                            }).then(function (images_y) {
+                                yahoo_images = [];
+                                for (var i = 0; i < images_y.length; i++) {
+                                    yahoo_images.push(images_y[i]["url"]);
+                                }
+                                results.push({
+                                    "yahoo_images": yahoo_images
+                                });
+                                // DONE
+                                res.send(results);
+                            }).catch(function (err) {
+                                console.log('err',err);
+                            });
+                        }).catch(function(err) {
+                            console.log('err', err);
+                        });
                     });
                 });
+
             }
         });
     });
