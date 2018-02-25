@@ -16,6 +16,8 @@ const primary_engine_langs = {
     naver: "ko"
 };
 
+var query_lang; 
+
 module.exports = function(app) {
 
     // =====================================
@@ -26,27 +28,26 @@ module.exports = function(app) {
     });
 
     app.post('/query', (req, res) => {
-        all_results = []
+        var all_results = [];
         let query = req.body.query;
         let lang = translateClient.detect(query, (err, res_lang) => {
             if (!err){
+                query_lang = res_lang.language;
                 search_engine(query, "google", res_lang, (results) => {
-                    console.log("finished google");
                     all_results.push({
-                        engine: "google",
-                        results: results
+                        "google": results
                     });
                     search_engine(query, "baidu", res_lang, (results) => {
                         all_results.push({
-                            engine: "baidu",
-                            results: results
+                            "baidu": results
                         });
                         search_engine(query, "yahoo", res_lang, (results) => {
                             all_results.push({
-                                engine: "yahoo",
-                                results: results
+                                "yahoo": results
                             });
-                            res.send(all_results);
+                            translate_to_query_lang(all_results, (results) => {
+                                res.send(results);
+                            });
                         })
                     });
                 });
@@ -99,7 +100,9 @@ function google_query(query, cb){
                 url: href
             });
         });
-        cb(results)
+        translate_to_query_lang(results, (res) => {
+            return cb(res);
+        });
     });
 }
 
@@ -116,6 +119,7 @@ function baidu_query(query, cb){
             titles.push(item.textContent.trim()); 
             before_urls.push(href);
         });
+
         redirects(before_urls, (err, urls) => {
             for (let i = 0; i < urls.length; i++) {
                 console.log(urls[i]);
@@ -124,7 +128,9 @@ function baidu_query(query, cb){
                     url: urls[i]
                 });
             }
-            cb(results);
+            translate_to_query_lang(results, (res) => {
+                return cb(res);
+            });
         });
     });
 }
@@ -143,7 +149,7 @@ function yahoo_query(query, cb) {
                 url: href
             });
         });
-        cb(results)
+        return cb(results);
     });
 }
 
@@ -176,4 +182,21 @@ function getRedirect(url, cb) {
 
 function redirects(urls, cb) {
     async.map(urls, getRedirect, cb);
+}
+
+function translate_to_query_lang(results, cb){
+    let titles = "";
+    for (let i = 0; i < results.length; i++) {
+        titles += results[i].title + '^';
+    }
+
+    translateClient.translate(titles, query_lang, function(err, translation) {
+        if (!err) {
+            let new_titles = translation.split('^');
+            for (let i = 0; i < results.length; i++) {
+                results[i].title = new_titles[i];
+            }
+            return cb(results);
+        } 
+    }); 
 }
